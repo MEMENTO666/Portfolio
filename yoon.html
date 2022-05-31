@@ -9,8 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Dongle:wght@300&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -37,13 +36,13 @@
       height: 9vh;
       border: 1px solid #002530;
       backdrop-filter: blur(15px);
-      /* background-color: #002530; */
-      opacity: 0.9;
+      opacity: 10;
       display: flex;
       justify-content: flex-end;
       align-items: center;
       position: fixed;
       padding-right: 40px;
+      font-weight: bold;
     }
 
     #menu-ul {
@@ -58,8 +57,8 @@
 
     #menu-ul>li:hover {
       color: #F13582;
-      transition: 1s;
-      font-size: 17px;
+      transition: 0.9s;
+      font-size: 20px;
     }
 
     /* 자바스크립트 구현 영역 */
@@ -237,6 +236,57 @@
       background-image: url(./메인2.jpg);
       background-size: cover;
     }
+              /* ****************************이미지 4개******************************** */
+            /***********************자식요소로 만들어서 한번에 효과주기*********** */
+    #text4Box {
+      width: 100vw;
+      height: 100vh;
+      /* border: 1px solid white; */
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #text4Box div:nth-child(1) {
+      width: 100vw;
+      height: 80vh;
+      /* border: 1px solid white; */
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+
+    #text4Box div:nth-child(1) div {
+      width: 400px;
+      height: 600px;
+      background-color: #F13582;
+    }
+
+
+    #text4BoxText {
+      width: 50vw;
+      height: 5vh;
+      margin-top: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 4vw;
+      /* border: 1px solid white; */
+      font-family: 'East Sea Dokdo', cursive;
+    }
+
+    #wed1 {
+      background-image: url(./웨딩.jpg);
+      background-size: cover;
+      background-position: center;
+    }
+
+    #wed2 {
+      background-image: url(./웨딩2.jpg);
+      background-size: cover;
+    }
+    /* ***********************좌, 우측에서 이미지 나오는 효과*************************** */
   </style>
 </head>
 
@@ -247,7 +297,7 @@
         <li id="home">HOME</li>
         <li id="about">ABOUT</li>
         <li id="photo">PHOTO</li>
-        <li>MENU</li>
+        <li id="wedding">WEDDING</li>
       </ul>
     </div>
     <div id="text1">
@@ -297,7 +347,17 @@
         <div id="photo4"></div>
       </div>
     </div>
+    <div id="text4Box">
+      <div>
+        <div id="wed1"></div>
+        <div id="wed2"></div>
+      </div>
+      <div id="text4BoxText">
+        <p>2018.11.10♥</p>
+      </div>
+    </div>
   </div>
+
 
   <script>
     const home = document.getElementById("home");
@@ -307,6 +367,9 @@
     const intro = document.getElementById("intro");
     const HS = document.getElementById("HS");
     const frogImg = document.getElementById("frogImg");
+    const wed1 = document.getElementById("wed1");
+    const wed2 = document.getElementById("wed2");
+    const wedding = document.getElementById("wedding");
 
     home.addEventListener("click", function () {
       scrollTo({
@@ -328,7 +391,12 @@
         behavior: "smooth"
       });
     })
-
+    wedding.addEventListener("click", function () {
+      scrollTo({
+        top: "2800",
+        behavior: "smooth"
+      });
+    })
     intro.addEventListener("mouseover", function (event) {
       console.log(intro);
       intro.style.fontSize = "7.4vw";
@@ -361,6 +429,29 @@
         frogImg.style.width = "350px";
         frogImg.style.height = "350px";
         frogImg.style.transition = "0.5s";
+      });
+    });
+    wed1.addEventListener("mouseover", function (event) {
+      wed1.style.width = "450px";
+      wed1.style.height = "650px";
+      wed1.style.transition = "0.7s";
+
+      wed1.addEventListener("mouseout", function (event) {
+        wed1.style.width = "400px";
+        wed1.style.height = "600px";
+        wed1.style.transition = "0.5s";
+      });
+    });
+
+    wed2.addEventListener("mouseover", function (event) {
+      wed2.style.width = "450px";
+      wed2.style.height = "650px";
+      wed2.style.transition = "0.7s";
+
+      wed2.addEventListener("mouseout", function (event) {
+        wed2.style.width = "400px";
+        wed2.style.height = "600px";
+        wed2.style.transition = "0.5s";
       });
     });
   </script>
