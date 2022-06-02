@@ -4,9 +4,119 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>training-4</title>
 </head>
+
 <body>
+  <style>
+    body {
+      overflow-x: hidden; 
+    }
+  </style>
+  <!-- 위 스타일은 box를 숨기기 위해 스크롤뷰 X 영역을 화면 밖으로 이동시켰을 때 가로스크롤을 생성하지 않도록 함 -->
   
+
+  <script>
+    // scrollTo(0, 0); 으로 스크롤 이동시키는 것이 페이지 새로고침으로 코드가 새로 시작될 때는
+    // 브라우저의 자동 스크롤 복원 기능이 있어서 원하는대로 동작하지 않음
+    // 페이지 새로고침시 스크롤 초기화 정상적으로 하기 위한 코드 (resize 이벤트에서는 scrollTo가 정상 동작함)
+    history.scrollRestoration = "manual";
+
+    // 스크롤뷰 생성해서 body에 끼워넣는 함수
+    const createScrollView = (scrollViewHeight) => {
+      const scrollElement = document.createElement('div');
+      scrollElement.style.width = '100%';
+      scrollElement.style.height = `${scrollViewHeight}px`;
+      scrollElement.style.backgroundColor = '#F0F0F0';
+      document.body.appendChild(scrollElement);
+      return scrollElement;
+    }
+
+    // 박스 크기 및 위치 설정
+    const setBoxByCurrentWindowHeight = (element, rectSize, leftPos) => {
+      element.style.left = `${leftPos}px`;
+      element.style.top = `${window.innerHeight / 2 - rectSize}px`;
+    }
+
+    // 박스 생성해서 parent에 끼워넣는 함수
+    const createBox = (parent, rectSize, color) => {
+      const newRect = document.createElement('div');
+      newRect.style.backgroundColor = color;
+      newRect.style.width = `${rectSize}px`;
+      newRect.style.height = `${rectSize}px`;
+      newRect.style.position = 'absolute';
+      parent.appendChild(newRect);
+      return newRect;
+    }
+
+    // 높이 1300짜리 스크롤뷰 만들어 body에 끼워넣고 DOM오브젝트 리턴받아서 mainScrollView에 저장
+    const mainScrollView = createScrollView(3800);
+
+    console.log('inner width, height = ', window.innerWidth, window.innerHeight);
+
+    // 정사각 사이즈 설정
+    const rectSize = 100;
+
+    // 메인스크롤뷰에 크기 100짜리 빨간색 div 생성, 초기 X위치(left)를 왼쪽 화면 밖으로
+    const leftBox = createBox(mainScrollView, rectSize, 'red');
+    setBoxByCurrentWindowHeight(leftBox, rectSize, -1 * rectSize);
+    let initialLeftBoxPosition = leftBox.getBoundingClientRect(); // 왼쪽 박스 초기 위치 백업
+
+    // 메인스크롤뷰에 크기 100짜리 파란색 div 생성, 초기 X위치를 오른쪽 화면 밖으로
+    const rightBox = createBox(mainScrollView, rectSize, 'blue');
+    setBoxByCurrentWindowHeight(rightBox, rectSize, window.innerWidth);
+    let initialRightBoxPosition = rightBox.getBoundingClientRect(); // 오른쪽 박스 초기 위치 백업
+
+    console.log('initial left, right box position = ', initialLeftBoxPosition, initialRightBoxPosition);
+
+    // 페이지 새로고침 했을 때 스크롤 초기화
+    window.scrollTo({ left: 0, top: 0 });
+
+    // 박스가 얼만큼 크기가 되었을때 더이상 붙지 못하게 할지
+    const boxMargin = 100;
+
+    document.addEventListener('scroll', () => {
+      const scrollValue = document.documentElement.scrollTop;
+      
+      // 화면 반영 전에 박스의 새로운 위치가 될 값 계산
+      const [newLeftBoxXPos, newRightBoxXPos] = [
+        initialLeftBoxPosition.left + scrollValue, // scroll값을 왼쪽박스의 left에 더해서 우측으로 이동
+        initialRightBoxPosition.left - scrollValue // scroll값을 오른쪽박스의 left에서 빼서 좌측으로 이동
+      ];
+      
+      if(newRightBoxXPos - newLeftBoxXPos < boxMargin * 2) { 
+        // 스크롤 내리다가 일정치 이상 가까워지면 더이상 이동을 못하게 함
+        // 반영하기 전 미리 계산된 값 기준으로 함수를 종료시켜야 스크롤 올렸을때 원복 가능함
+        return;
+      }
+
+      console.log('current X position left, right = ', newLeftBoxXPos, newRightBoxXPos);
+
+      // 새로운 위치값 화면에 반영
+      leftBox.style.left = `${newLeftBoxXPos}px`;
+      rightBox.style.left = `${newRightBoxXPos}px`;
+
+      // scroll값을 y좌표(top)에 더함으로서 제자리 높이를 유지하게 함
+      leftBox.style.top = `${initialLeftBoxPosition.top + scrollValue}px`;
+      rightBox.style.top = `${initialRightBoxPosition.top + scrollValue}px`;
+    });
+
+    // 브라우저 창 크기 변경시켰을 때 박스의 기준 위치 다시 계산
+    window.addEventListener('resize', () => {
+      console.log('browser size changed : ', window.innerWidth, window.innerHeight);
+      window.scrollTo({ left: 0, top: 0 });
+      
+      // 왼쪽 박스 초기 위치 현 화면 크기에 맞게 갱신
+      setBoxByCurrentWindowHeight(leftBox, rectSize, -1 * rectSize);
+      initialLeftBoxPosition = leftBox.getBoundingClientRect(); 
+      
+      // 오른쪽 박스 초기 위치 현 화면 크기에 맞게 갱신
+      setBoxByCurrentWindowHeight(rightBox, rectSize, window.innerWidth);
+      initialRightBoxPosition = rightBox.getBoundingClientRect(); 
+      
+      console.log('left, right box position changed : ', initialLeftBoxPosition, initialRightBoxPosition);
+    }, true);
+  </script>
 </body>
+
 </html>
